@@ -571,7 +571,7 @@ function HomePage() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            Bombastische Musik
+            Kraftvolle Musik
           </motion.h2>
         </motion.div>
       </motion.section>
