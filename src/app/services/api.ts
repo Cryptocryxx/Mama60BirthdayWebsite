@@ -127,10 +127,10 @@ export async function createCancellation(
   cancellation: { name: string }
 ): Promise<ApiResponse<Cancellation>> {
   try {
-    console.log('Sending cancellation to:', `${API_BASE_URL}/declined`);
+    console.log('Sending cancellation to:', `${API_BASE_URL}/users/declined`);
     console.log('Request body:', { name: cancellation.name });
 
-    const response = await fetch(`${API_BASE_URL}/declined`, {
+    const response = await fetch(`${API_BASE_URL}/users/declined`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -177,9 +177,9 @@ export async function createCancellation(
 // GET /api/declined - Alle Absagen abrufen
 export async function getCancellations(): Promise<ApiResponse<Cancellation[]>> {
   try {
-    console.log('Fetching cancellations from:', `${API_BASE_URL}/declined`);
+    console.log('Fetching cancellations from:', `${API_BASE_URL}/users/declined`);
 
-    const response = await fetch(`${API_BASE_URL}/declined`, {
+    const response = await fetch(`${API_BASE_URL}/users/declined`, {
       method: 'GET',
       mode: 'cors',
       headers: {
