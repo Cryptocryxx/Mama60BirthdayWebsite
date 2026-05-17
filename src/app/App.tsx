@@ -197,6 +197,44 @@ function HomePage() {
     };
   }, [isPlaying]);
 
+  useEffect(() => {
+
+  const handleVisibilityChange = () => {
+
+    if (document.hidden && audioRef.current) {
+
+      audioRef.current.pause();
+      setIsPlaying(false);
+
+    } else if (!document.hidden && audioRef.current) {
+
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          // Browser blockiert autoplay erneut
+        });
+
+    }
+  };
+
+  document.addEventListener(
+    "visibilitychange",
+    handleVisibilityChange,
+  );
+
+  return () => {
+
+    document.removeEventListener(
+      "visibilitychange",
+      handleVisibilityChange,
+    );
+
+  };
+
+}, []);
+
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
   ) => {
@@ -854,7 +892,7 @@ function HomePage() {
                             : "Dein Ticket ist reserviert!"}
                         </Dialog.Description>
                         <p className="text-base md:text-xl text-white/80 text-center mb-8">
-                          Bitte schaue in deine E-Mails für weitere Informationen
+                          Bitte schaue in deine E-Mails für weitere Informationen. (Manchmal landen die Mails im Spam-Ordner, also bitte auch dort nachschauen!)
                         </p>
                         <Dialog.Close asChild>
                           <button className="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 px-8 py-3 rounded-xl text-lg md:text-xl font-semibold hover:shadow-xl hover:shadow-pink-500/50 transition-all">
