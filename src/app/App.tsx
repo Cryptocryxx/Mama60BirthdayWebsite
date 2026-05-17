@@ -22,7 +22,7 @@ import seiDabeiImage from "../imports/SeiDabei.jpeg";
 import afterSubmitImage from "../imports/AfterTheySubmitted.jpeg";
 
 // Importiere Musik
-import beethovenMusic from "../imports/directtodreams-moonlight-sonata-beethoven-remix-265909.mp3";
+import beethovenMusic from "../imports/music.mp3";
 
 function HomePage() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -504,7 +504,7 @@ function HomePage() {
           className="relative z-10 text-center px-4"
         >
           <motion.h2
-            className="text-5xl sm:text-6xl md:text-8xl font-bold"
+            className="text-4xl sm:text-6xl md:text-8xl font-bold"
             initial={{ scale: 0.8, filter: "blur(10px)" }}
             whileInView={{ scale: 1, filter: "blur(0px)" }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -534,13 +534,13 @@ function HomePage() {
           className="relative z-10 text-center px-4"
         >
           <motion.h2
-            className="text-5xl sm:text-6xl md:text-8xl font-bold"
+            className="text-4xl sm:text-6xl md:text-8xl font-bold"
             initial={{ rotateX: -90, opacity: 0 }}
             whileInView={{ rotateX: 0, opacity: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             style={{ perspective: "1000px" }}
           >
-            Gutes Essen
+            Leckeres Essen
           </motion.h2>
         </motion.div>
       </motion.section>
@@ -563,7 +563,7 @@ function HomePage() {
           className="relative z-10 text-center px-4"
         >
           <motion.h2
-            className="text-5xl sm:text-6xl md:text-8xl font-bold"
+            className="text-4xl sm:text-6xl md:text-8xl font-bold"
             initial={{ scale: 1.5, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             transition={{
