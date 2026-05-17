@@ -1,5 +1,5 @@
 // REST API für Geburtstags-Anmeldungen
-const API_BASE_URL = 'http://87.106.90.201/api';
+const API_BASE_URL = 'https://anettkuehfuss.de/api';
 
 export interface Confirmation {
   _id: string;
