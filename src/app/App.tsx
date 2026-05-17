@@ -153,23 +153,6 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    // Versuche Musik sofort zu starten
-    const tryAutoplay = () => {
-      if (audioRef.current && !isPlaying) {
-        audioRef.current.volume = 0.5;
-        audioRef.current
-          .play()
-          .then(() => {
-            setIsPlaying(true);
-          })
-          .catch(() => {
-            // Autoplay blockiert - warte auf User-Interaktion
-          });
-      }
-    };
-
-    // Versuche sofort
-    tryAutoplay();
 
     // Falls blockiert, starte bei erster Interaktion
     const handleInteraction = () => {
