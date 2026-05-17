@@ -39,74 +39,74 @@ function HomePage() {
 
   const heroOpacity = useTransform(
     scrollYProgress,
-    [0, 0.08, 0.13],
-    [1, 1, 0],
+    [0, 0.08, 0.13, 1], // Hinten mit 1 abgeriegelt
+    [1, 1, 0, 0],       // Bleibt auf 0
   );
   const heroY = useTransform(
     scrollYProgress,
-    [0, 0.15],
-    [0, -100],
+    [0, 0.15, 1],
+    [0, -100, -100],
   );
 
   const section1Y = useTransform(
     scrollYProgress,
-    [0.1, 0.2, 0.3],
-    [100, 0, -100],
+    [0, 0.1, 0.2, 0.3, 1],
+    [100, 100, 0, -100, -100],
   );
   const section1Opacity = useTransform(
     scrollYProgress,
-    [0.13, 0.17, 0.25, 0.28],
-    [0, 1, 1, 0],
+    [0, 0.13, 0.17, 0.25, 0.28, 1], // Vorne und hinten abgeriegelt
+    [0, 0, 1, 1, 0, 0],
   );
 
   const section2Y = useTransform(
     scrollYProgress,
-    [0.25, 0.35, 0.45],
-    [100, 0, -100],
+    [0, 0.25, 0.35, 0.45, 1],
+    [100, 100, 0, -100, -100],
   );
   const section2Opacity = useTransform(
     scrollYProgress,
-    [0.28, 0.32, 0.4, 0.43],
-    [0, 1, 1, 0],
+    [0, 0.28, 0.32, 0.4, 0.43, 1],
+    [0, 0, 1, 1, 0, 0],
   );
 
   const section3Y = useTransform(
     scrollYProgress,
-    [0.4, 0.5, 0.6],
-    [100, 0, -100],
+    [0, 0.4, 0.5, 0.6, 1],
+    [100, 100, 0, -100, -100],
   );
   const section3Opacity = useTransform(
     scrollYProgress,
-    [0.43, 0.47, 0.55, 0.58],
-    [0, 1, 1, 0],
+    [0, 0.43, 0.47, 0.55, 0.58, 1],
+    [0, 0, 1, 1, 0, 0],
   );
 
   const section4Y = useTransform(
     scrollYProgress,
-    [0.55, 0.65, 0.75],
-    [100, 0, -100],
+    [0, 0.55, 0.65, 0.75, 1],
+    [100, 100, 0, -100, -100],
   );
   const section4Opacity = useTransform(
     scrollYProgress,
-    [0.58, 0.62, 0.7, 0.73],
-    [0, 1, 1, 0],
+    [0, 0.58, 0.62, 0.7, 0.73, 1],
+    [0, 0, 1, 1, 0, 0],
   );
 
   const section5Y = useTransform(
     scrollYProgress,
-    [0.7, 0.8, 0.9],
-    [100, 0, -100],
+    [0, 0.7, 0.8, 0.9, 1],
+    [100, 100, 0, -100, -100],
   );
   const section5Opacity = useTransform(
     scrollYProgress,
-    [0.73, 0.77, 0.85, 0.88],
-    [0, 1, 1, 0],
+    [0, 0.73, 0.77, 0.85, 0.88, 1],
+    [0, 0, 1, 1, 0, 0],
   );
 
   const finalOpacity = useTransform(
     scrollYProgress,
-    [0.88, 0.95],
-    [0, 1],
+    [0, 0.88, 0.95, 1],
+    [0, 0, 1, 1],
   );
 
   useEffect(() => {
