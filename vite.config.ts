@@ -24,6 +24,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  base: 'geburtstag',
   resolve: {
     alias: {
       // Alias @ to the src directory
