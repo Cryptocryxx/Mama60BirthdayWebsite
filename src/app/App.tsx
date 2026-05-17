@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router";
 import { motion, useScroll, useTransform } from "motion/react";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Minus, Plus } from "lucide-react";
 import confetti from "canvas-confetti";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
@@ -101,12 +101,6 @@ function HomePage() {
     scrollYProgress,
     [0, 0.73, 0.77, 0.85, 0.88, 1],
     [0, 0, 1, 1, 0, 0],
-  );
-
-  const finalOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.88, 0.95, 1],
-    [0, 0, 1, 1],
   );
 
   useEffect(() => {
@@ -662,11 +656,9 @@ function HomePage() {
       </div>
 
       {/* Final Section: Sei dabei */}
-      <section className="relative min-h-screen flex items-center justify-center py-20">
-        <motion.div
-          style={{ opacity: finalOpacity }}
-          className="relative z-10 max-w-2xl mx-auto px-4 w-full"
-        >
+      <section className="relative min-h-screen flex flex-col justify-center pt-32 pb-20">
+        <div className="relative z-10 max-w-2xl mx-auto px-4 w-full">
+          
           <motion.h2
             initial={{
               scale: 0.5,
@@ -678,6 +670,7 @@ function HomePage() {
               opacity: 1,
               filter: "blur(0px)",
             }}
+            viewport={{ once: true }}
             transition={{
               duration: 0.9,
               ease: [0.22, 1, 0.36, 1],
@@ -690,6 +683,7 @@ function HomePage() {
           <motion.h3
             initial={{ x: -50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
             transition={{
               duration: 0.8,
               delay: 0.3,
@@ -705,6 +699,7 @@ function HomePage() {
           <motion.div
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="bg-white/10 backdrop-blur-md rounded-2xl md:rounded-3xl p-6 md:p-12 border border-white/20"
           >
@@ -712,26 +707,40 @@ function HomePage() {
               onSubmit={handleSubmit}
               className="space-y-4 md:space-y-6"
             >
-              <div>
-                <label
-                  htmlFor="guests"
-                  className="block text-lg md:text-xl mb-2"
-                >
+              {/* Personenzähler Container */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <label className="block text-lg md:text-xl text-center sm:text-left">
                   Anzahl Personen
                 </label>
-                <input
-                  type="number"
-                  id="guests"
-                  name="guests"
-                  min="1"
-                  value={guestCount}
-                  onChange={(e) =>
-                    setGuestCount(parseInt(e.target.value) || 1)
-                  }
-                  required
-                  className="w-full px-4 py-3 md:px-6 md:py-4 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-pink-500 text-base md:text-lg"
-                />
+                <div className="flex items-center justify-between sm:justify-start gap-4 bg-white/10 p-2 rounded-2xl border border-white/20">
+                  <motion.button
+                    type="button"
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                    disabled={guestCount <= 1}
+                    className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:hover:bg-white/10 transition-all text-white border border-white/10"
+                  >
+                    <Minus size={24} />
+                  </motion.button>
+
+                  <div className="flex-1 sm:flex-none sm:w-24 text-center">
+                    <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-400 to-yellow-400 bg-clip-text text-transparent">
+                      {guestCount}
+                    </span>
+                  </div>
+
+                  <motion.button
+                    type="button"
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setGuestCount(guestCount + 1)}
+                    className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all text-white border border-white/10"
+                  >
+                    <Plus size={24} />
+                  </motion.button>
+                </div>
               </div>
+
+              {/* Dynamische Namensfelder */}
               {[...Array(guestCount)].map((_, index) => (
                 <div key={index}>
                   <label
@@ -791,9 +800,7 @@ function HomePage() {
                 whileTap={{ scale: 0.95 }}
                 className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 py-4 md:py-5 rounded-xl text-xl md:text-2xl hover:shadow-2xl hover:shadow-pink-500/50 transition-all duration-300"
               >
-                {isPlural
-                  ? "Tickets sichern!"
-                  : "Ticket sichern!"}
+                {isPlural ? "Tickets sichern!" : "Ticket sichern!"}
               </motion.button>
 
               <Dialog.Root
@@ -807,9 +814,7 @@ function HomePage() {
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-white/5 hover:bg-white/10 border border-white/20 py-3 md:py-4 rounded-xl text-base md:text-lg text-white/70 hover:text-white transition-all duration-300"
                   >
-                    {isPlural
-                      ? "Wir können leider nicht"
-                      : "Ich kann leider nicht"}
+                    {isPlural ? "Wir können leider nicht" : "Ich kann leider nicht"}
                   </motion.button>
                 </Dialog.Trigger>
 
@@ -912,9 +917,10 @@ function HomePage() {
                   </Dialog.Content>
                 </Dialog.Portal>
               </Dialog.Root>
+
             </form>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
     </div>
   );
