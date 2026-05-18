@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Users, UserX, RefreshCw, LogOut } from 'lucide-react';
+import { Users, UserX, RefreshCw, LogOut, X } from 'lucide-react';
 import {
   getConfirmations,
   getCancellations,
-  deleteAllConfirmations,
-  deleteAllCancellations,
+  deleteConfirmation,
+  deleteCancellation,
   Confirmation,
   Cancellation,
 } from '../services/api';
@@ -69,17 +69,46 @@ export function AdminPage() {
     setLoading(false);
   };
 
-  const clearAll = async () => {
-    if (confirm('Möchtest du wirklich alle Anmeldungen löschen?')) {
+  const handleDeleteConfirmation = async (id: string) => {
+    if (window.confirm('Möchtest du diese Zusage wirklich löschen?')) {
       setLoading(true);
-      await deleteAllConfirmations();
-      await deleteAllCancellations();
-      setConfirmations([]);
-      setCancellations([]);
+      const response = await deleteConfirmation(id);
+      if (response.success) {
+        setConfirmations((prev) => prev.filter((conf) => conf._id !== id));
+      } else {
+        setError(response.error || 'Fehler beim Löschen der Zusage');
+      }
       setLoading(false);
     }
   };
 
+  const handleDeleteCancellation = async (id: string) => {
+    if (window.confirm('Möchtest du diese Absage wirklich löschen?')) {
+      setLoading(true);
+      const response = await deleteCancellation(id);
+      if (response.success) {
+        setCancellations((prev) => prev.filter((canc) => canc._id !== id));
+      } else {
+        setError(response.error || 'Fehler beim Löschen der Absage');
+      }
+      setLoading(false);
+    }
+  };
+
+  // Hilfsfunktion zum Formatieren des Datums
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // Tatsächliche Personenanzahl berechnen
   const totalGuests = confirmations.reduce((sum, conf) => sum + conf.names.length, 0);
 
   if (!isAuthenticated) {
@@ -167,18 +196,18 @@ export function AdminPage() {
           <div className="bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl p-6 border border-green-500/30">
             <div className="text-center">
               <div className="text-5xl font-bold text-green-400 mb-2">
-                {confirmations.length}
+                {totalGuests}
               </div>
-              <div className="text-white/70">Zusagen</div>
+              <div className="text-white/70">Zusagen (Personen)</div>
             </div>
           </div>
 
           <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl p-6 border border-purple-500/30">
             <div className="text-center">
               <div className="text-5xl font-bold text-purple-400 mb-2">
-                {totalGuests}
+                {confirmations.length}
               </div>
-              <div className="text-white/70">Gäste insgesamt</div>
+              <div className="text-white/70">Gruppen / Einträge</div>
             </div>
           </div>
 
@@ -197,26 +226,40 @@ export function AdminPage() {
           <div className="bg-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10">
             <h2 className="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
               <Users size={24} />
-              Zusagen ({confirmations.length})
+              Zusagen ({totalGuests} Personen)
             </h2>
-            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
               {confirmations.length === 0 ? (
                 <p className="text-white/50">Noch keine Zusagen</p>
               ) : (
-                confirmations.map((conf, index) => (
+                confirmations.map((conf) => (
                   <div
                     key={conf._id}
-                    className="bg-white/5 p-4 rounded-lg border border-white/10"
+                    className="bg-white/5 p-4 rounded-lg border border-white/10 flex justify-between items-start group transition-all hover:bg-white/10"
                   >
-                    <div className="font-semibold text-white text-lg">
-                      {conf.names.join(', ')}
+                    <div>
+                      <div className="font-semibold text-white text-lg">
+                        {conf.names.join(', ')}
+                      </div>
+                      <div className="text-sm text-white/70 mt-1">
+                        {conf.email}
+                      </div>
+                      <div className="text-sm text-white/60 mt-1">
+                        {conf.names.length} {conf.names.length === 1 ? 'Person' : 'Personen'}
+                      </div>
+                      {conf.createdAt && (
+                        <div className="text-xs text-white/40 mt-2">
+                          Zugesagt am: {formatDate(conf.createdAt)} Uhr
+                        </div>
+                      )}
                     </div>
-                    <div className="text-sm text-white/70 mt-1">
-                      {conf.email}
-                    </div>
-                    <div className="text-sm text-white/60 mt-1">
-                      {conf.names.length} {conf.names.length === 1 ? 'Person' : 'Personen'}
-                    </div>
+                    <button
+                      onClick={() => handleDeleteConfirmation(conf._id)}
+                      className="text-white/30 hover:text-red-400 p-2 rounded-lg transition-colors md:opacity-0 group-hover:opacity-100"
+                      title="Zusage löschen"
+                    >
+                      <X size={20} />
+                    </button>
                   </div>
                 ))
               )}
@@ -229,18 +272,32 @@ export function AdminPage() {
               <UserX size={24} />
               Absagen ({cancellations.length})
             </h2>
-            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
               {cancellations.length === 0 ? (
                 <p className="text-white/50">Noch keine Absagen</p>
               ) : (
                 cancellations.map((cancel) => (
                   <div
                     key={cancel._id}
-                    className="bg-white/5 p-4 rounded-lg border border-white/10"
+                    className="bg-white/5 p-4 rounded-lg border border-white/10 flex justify-between items-center group transition-all hover:bg-white/10"
                   >
-                    <div className="font-semibold text-white">
-                      {cancel.name}
+                    <div>
+                      <div className="font-semibold text-white">
+                        {cancel.name}
+                      </div>
+                      {cancel.createdAt && (
+                        <div className="text-xs text-white/40 mt-2">
+                          Abgesagt am: {formatDate(cancel.createdAt)} Uhr
+                        </div>
+                      )}
                     </div>
+                    <button
+                      onClick={() => handleDeleteCancellation(cancel._id)}
+                      className="text-white/30 hover:text-red-400 p-2 rounded-lg transition-colors md:opacity-0 group-hover:opacity-100"
+                      title="Absage löschen"
+                    >
+                      <X size={20} />
+                    </button>
                   </div>
                 ))
               )}
@@ -248,13 +305,7 @@ export function AdminPage() {
           </div>
         </div>
 
-        <div className="mt-8 flex gap-4">
-          <button
-            onClick={clearAll}
-            className="flex-1 bg-red-600/20 hover:bg-red-600/30 border border-red-500/50 py-4 rounded-xl text-red-400 transition-all duration-300 font-semibold"
-          >
-            Alle Anmeldungen löschen
-          </button>
+        <div className="mt-8">
           <button
             onClick={() => {
               const data = {
@@ -272,7 +323,7 @@ export function AdminPage() {
               a.download = `geburtstag-anmeldungen-${new Date().toISOString().split('T')[0]}.json`;
               a.click();
             }}
-            className="flex-1 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/50 py-4 rounded-xl text-purple-400 transition-all duration-300 font-semibold"
+            className="w-full bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/50 py-4 rounded-xl text-purple-400 transition-all duration-300 font-semibold"
           >
             Daten exportieren
           </button>
