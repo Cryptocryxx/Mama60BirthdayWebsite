@@ -912,7 +912,17 @@ const handleVisibilityChange = () => {
                           Bitte schaue in deine E-Mails für weitere Informationen. (Manchmal landen die Mails im Spam-Ordner, also bitte auch dort nachschauen!)
                         </p>
                         <Dialog.Close asChild>
-                          <button className="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 px-8 py-3 rounded-xl text-lg md:text-xl font-semibold hover:shadow-xl hover:shadow-pink-500/50 transition-all">
+                          <button 
+                           onClick={() => {
+                            // Wir warten 300 Millisekunden, bis die Schließen-Animation des Popups durch ist
+                            setTimeout(() => {
+                              window.scrollTo({
+                                top: 0,
+                                behavior: "smooth" // Sorgt für ein sanftes, weiches Hochscrollen
+                              });
+                            }, 300);
+                          }}
+                          className="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 px-8 py-3 rounded-xl text-lg md:text-xl font-semibold hover:shadow-xl hover:shadow-pink-500/50 transition-all">
                             Schließen
                           </button>
                         </Dialog.Close>
