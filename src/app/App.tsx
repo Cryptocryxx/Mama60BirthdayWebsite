@@ -193,49 +193,37 @@ function HomePage() {
   useEffect(() => {
 
 const handleVisibilityChange = () => {
-    if (document.hidden && audioRef.current) {
+  if (document.hidden && audioRef.current) {
+    audioRef.current.pause();
+    setIsPlaying(false);
+
+    // Hier sagen wir dem Smartphone: Die Musik-Sitzung ist vorbei
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = 'none';
       
-      // 1. Musik stoppen
-      audioRef.current.pause();
-      setIsPlaying(false);
-
-      // 2. iOS Hard-Reset: Wir nehmen dem Browser die Datei weg!
-      audioRef.current.removeAttribute('src');
-      audioRef.current.load(); // Zwingt das Handy, das leere Audio zu laden
-
-      // 3. Dem System sagen, dass nichts mehr läuft
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.playbackState = 'none';
-        navigator.mediaSession.metadata = null;
-        console.log("Audio-Quelle entfernt und Media Session zurückgesetzt, um iOS Autoplay-Blockierung zu umgehen.");
-      }
-
-    } else if (!document.hidden && audioRef.current) {
-      
-      // 1. Musikdatei wieder einsetzen
-      audioRef.current.src = beethovenMusic;
-      audioRef.current.load();
-
-      // 2. Wieder abspielen
-      audioRef.current.play()
-        .then(() => {
-          setIsPlaying(true);
-          
-          // Metadaten für das Widget wiederherstellen (falls gewünscht)
-          if ('mediaSession' in navigator) {
-            navigator.mediaSession.playbackState = 'playing';
-            navigator.mediaSession.metadata = new MediaMetadata({
-              title: 'Anetts 60. Geburtstag',
-              artist: 'Beethoven',
-            });
-          }
-        })
-        .catch(() => {
-          // Browser blockiert Autoplay beim Zurückkehren
-          console.log("Autoplay nach Tab-Wechsel blockiert.");
-        });
+      // Optional: Metadaten komplett leeren, damit die Anzeige verschwindet
+      navigator.mediaSession.metadata = null;
     }
-  };
+
+  } else if (!document.hidden && audioRef.current) {
+    audioRef.current.play()
+      .then(() => {
+        setIsPlaying(true);
+        
+        // Wenn der Tab wieder aktiv wird, die Anzeige bei Bedarf wieder aktivieren
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'playing';
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: 'Anetts 60. Geburtstag',
+            artist: 'Beethoven',
+          });
+        }
+      })
+      .catch(() => {
+        // Browser blockiert autoplay erneut
+      });
+  }
+};
 
   document.addEventListener(
     "visibilitychange",
@@ -320,7 +308,9 @@ const handleVisibilityChange = () => {
         }}
       />
 
-      <audio ref={audioRef} loop src={beethovenMusic} preload="auto" />
+      <audio ref={audioRef} loop>
+        <source src={beethovenMusic} type="audio/mpeg" />
+      </audio>
 
       {/* Animated Particles Overlay */}
       <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
@@ -446,29 +436,20 @@ const handleVisibilityChange = () => {
 
       {/* Hero Section */}
       <motion.section
-        style={{ 
-          opacity: heroOpacity,
-          willChange: "opacity" // Sagt dem Browser: "Hier ändert sich gleich die Transparenz!"
-        }}
+        style={{ opacity: heroOpacity }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <div
           className="absolute inset-0 bg-cover bg-[position:calc(50%-2.5cm)_center] md:bg-center"
           style={{
-            // Den Gradienten leicht angepasst, um den fehlenden 'brightness' Filter auszugleichen
-            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.40)), url('${heroImage}')`,
-            // filter: "brightness(0.95) contrast(1.05)", <-- KOMPLETT ENTFERNEN
-            willChange: "transform", // Verhindert Re-Paints des riesigen Hintergrunds
+            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.35)), url('${heroImage}')`,
+            filter: "brightness(0.95) contrast(1.05)",
           }}
         />
         <motion.div
-          style={{ 
-            y: heroY,
-            willChange: "transform" // Auslagerung auf die GPU
-          }}
+          style={{ y: heroY }}
           className="relative z-10 text-center px-4"
         >
-          {/* Dein bestehender Text-Code bleibt hier unverändert */}
           <motion.h1
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
@@ -495,8 +476,30 @@ const handleVisibilityChange = () => {
           </motion.h1>
         </motion.div>
 
-        {/* ... ChevronDown Code ... */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-20"
+        >
+          <motion.div
+            animate={{ y: [0, 15, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="flex flex-col items-center gap-2"
+          >
+            <span className="text-base md:text-xl">
+              Scroll für mehr
+            </span>
+            <ChevronDown
+              size={32}
+              className="md:w-10 md:h-10"
+            />
+          </motion.div>
+        </motion.div>
       </motion.section>
+
+      <div className="h-[100vh]" />
+
       {/* Section 1: Mach dich bereit */}
       <motion.section
         style={{ opacity: section1Opacity }}
@@ -909,17 +912,7 @@ const handleVisibilityChange = () => {
                           Bitte schaue in deine E-Mails für weitere Informationen. (Manchmal landen die Mails im Spam-Ordner, also bitte auch dort nachschauen!)
                         </p>
                         <Dialog.Close asChild>
-                          <button 
-                          onClick={() => {
-                            // Wir warten 300 Millisekunden, bis die Schließen-Animation des Popups durch ist
-                            setTimeout(() => {
-                              window.scrollTo({
-                                top: 0,
-                                behavior: "smooth" // Sorgt für ein sanftes, weiches Hochscrollen
-                              });
-                            }, 300);
-                          }}
-                          className="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 px-8 py-3 rounded-xl text-lg md:text-xl font-semibold hover:shadow-xl hover:shadow-pink-500/50 transition-all">
+                          <button className="bg-gradient-to-r from-pink-500 via-purple-500 to-yellow-500 px-8 py-3 rounded-xl text-lg md:text-xl font-semibold hover:shadow-xl hover:shadow-pink-500/50 transition-all">
                             Schließen
                           </button>
                         </Dialog.Close>
