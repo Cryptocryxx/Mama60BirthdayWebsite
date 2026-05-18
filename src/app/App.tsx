@@ -423,7 +423,7 @@ function HomePage() {
 
       {/* Hero Section */}
       <motion.section
-        style={{ opacity: heroOpacity, transform: "translateZ(0)", willChange: "transform, opacity" }}
+        style={{ opacity: heroOpacity }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <div
@@ -489,7 +489,7 @@ function HomePage() {
 
       {/* Section 1: Mach dich bereit */}
       <motion.section
-        style={{ opacity: section1Opacity, transform: "translateZ(0)", willChange: "transform, opacity" }}
+        style={{ opacity: section1Opacity }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <motion.div
@@ -519,7 +519,7 @@ function HomePage() {
 
       {/* Section 2: Gutes Essen */}
       <motion.section
-        style={{ opacity: section2Opacity, transform: "translateZ(0)", willChange: "transform, opacity" }}
+        style={{ opacity: section2Opacity }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <motion.div
@@ -548,7 +548,7 @@ function HomePage() {
 
       {/* Section 3: Bombastische Musik */}
       <motion.section
-        style={{ opacity: section3Opacity, transform: "translateZ(0)", willChange: "transform, opacity" }}
+        style={{ opacity: section3Opacity }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <motion.div
@@ -579,7 +579,7 @@ function HomePage() {
 
       {/* Section 4: Unter freiem Himmel */}
       <motion.section
-        style={{ opacity: section4Opacity, transform: "translateZ(0)", willChange: "transform, opacity" }}
+        style={{ opacity: section4Opacity }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <motion.div
@@ -615,7 +615,7 @@ function HomePage() {
 
       {/* Section 5: Datum */}
       <motion.section
-        style={{ opacity: section5Opacity, transform: "translateZ(0)", willChange: "transform, opacity" }}
+        style={{ opacity: section5Opacity }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <motion.div
