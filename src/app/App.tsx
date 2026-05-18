@@ -436,14 +436,13 @@ const handleVisibilityChange = () => {
 
       {/* Hero Section */}
       <motion.section
-        style={{ opacity: heroOpacity }}
+        style={{ opacity: heroOpacity, willChange: "opacity" }}
         className="fixed inset-0 flex items-center justify-center"
       >
         <div
           className="absolute inset-0 bg-cover bg-[position:calc(50%-2.5cm)_center] md:bg-center"
           style={{
             backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.35)), url('${heroImage}')`,
-            filter: "brightness(0.95) contrast(1.05)",
           }}
         />
         <motion.div
