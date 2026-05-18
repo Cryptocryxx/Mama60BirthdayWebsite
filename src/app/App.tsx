@@ -11,15 +11,14 @@ import {
 import { AdminPage } from "./pages/AdminPage";
 
 // Importiere Bilder
-import heroImage from "../imports/60JahreJung.jpeg";
-import backgroundImage from "../imports/46838fc1-84a7-445e-95d2-fd37ab5e2e30.png";
-import machDichBereitImage from "../imports/MachDichBereit.jpeg";
-import gutesEssenImage from "../imports/GutesEssenUndTrinken.jpeg";
-import bombastischeMusikImage from "../imports/BombastischeMusik.jpeg";
-import unterFreiemHimmelImage from "../imports/RotatedUnterFreiemHimmel.jpeg";
-import am18072026Image from "../imports/Am18072026.jpeg";
-import seiDabeiImage from "../imports/SeiDabei.jpeg";
-import afterSubmitImage from "../imports/AfterTheySubmitted.jpeg";
+import heroImage from "../imports/60JahreJung.webp";
+import backgroundImage from "../imports/46838fc1-84a7-445e-95d2-fd37ab5e2e30.webp";
+import machDichBereitImage from "../imports/MachDichBereit.webp";
+import gutesEssenImage from "../imports/GutesEssenUndTrinken.webp";
+import bombastischeMusikImage from "../imports/BombastischeMusik.webp";
+import unterFreiemHimmelImage from "../imports/RotatedUnterFreiemHimmel.webp";
+import am18072026Image from "../imports/Am18072026.webp";
+import afterSubmitImage from "../imports/AfterTheySubmitted.webp";
 
 // Importiere Musik
 import beethovenMusic from "../imports/music.mp3";
