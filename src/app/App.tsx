@@ -192,25 +192,38 @@ function HomePage() {
 
   useEffect(() => {
 
-  const handleVisibilityChange = () => {
+const handleVisibilityChange = () => {
+  if (document.hidden && audioRef.current) {
+    audioRef.current.pause();
+    setIsPlaying(false);
 
-    if (document.hidden && audioRef.current) {
-
-      audioRef.current.pause();
-      setIsPlaying(false);
-
-    } else if (!document.hidden && audioRef.current) {
-
-      audioRef.current.play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch(() => {
-          // Browser blockiert autoplay erneut
-        });
-
+    // Hier sagen wir dem Smartphone: Die Musik-Sitzung ist vorbei
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = 'none';
+      
+      // Optional: Metadaten komplett leeren, damit die Anzeige verschwindet
+      navigator.mediaSession.metadata = null;
     }
-  };
+
+  } else if (!document.hidden && audioRef.current) {
+    audioRef.current.play()
+      .then(() => {
+        setIsPlaying(true);
+        
+        // Wenn der Tab wieder aktiv wird, die Anzeige bei Bedarf wieder aktivieren
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'playing';
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: 'Anetts 60. Geburtstag',
+            artist: 'Beethoven',
+          });
+        }
+      })
+      .catch(() => {
+        // Browser blockiert autoplay erneut
+      });
+  }
+};
 
   document.addEventListener(
     "visibilitychange",
